@@ -14,7 +14,7 @@ def main():
     # Load datasets
     train_path = 'tourism_project/model_building/train.csv'
     test_path = 'tourism_project/model_building/test.csv'
-    
+
     if not os.path.exists(train_path) or not os.path.exists(test_path):
         print("Error: Splits not found.")
         return
@@ -61,7 +61,10 @@ def main():
         'xgbclassifier__n_estimators': [50, 100]
     }
 
+    # Explicitly point to the local MLflow server running in GHA background
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
     mlflow.set_experiment("Tourism_Prediction")
+    
     with mlflow.start_run():
         grid = GridSearchCV(pipeline, param_grid, cv=3, scoring='accuracy', n_jobs=-1)
         grid.fit(X_train, y_train)
