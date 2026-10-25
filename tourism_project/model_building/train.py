@@ -64,7 +64,7 @@ def main():
     # Explicitly point to the local MLflow server running in GHA background
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
     mlflow.set_experiment("Tourism_Prediction")
-    
+
     with mlflow.start_run():
         grid = GridSearchCV(pipeline, param_grid, cv=3, scoring='accuracy', n_jobs=-1)
         grid.fit(X_train, y_train)
@@ -76,7 +76,8 @@ def main():
         # Log params and metrics
         mlflow.log_params(grid.best_params_)
         mlflow.log_metric("accuracy", accuracy)
-        mlflow.sklearn.log_model(best_model, "model")
+        # Use serialization_format="pickle" to bypass skops untrusted types validation error with XGBoost
+        mlflow.sklearn.log_model(best_model, "model", serialization_format="pickle")
 
         print(f"Best Hyperparameters: {grid.best_params_}")
         print(f"Accuracy on Test Set: {accuracy:.4f}")
