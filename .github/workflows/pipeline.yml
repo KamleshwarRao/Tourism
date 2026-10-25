@@ -25,7 +25,7 @@ jobs:
         run: python tourism_project/model_building/data_register.py
       - name: Upload Registered Dataset
         uses: actions/upload-artifact@v4
-        with:
+        with: 
           name: registered-data
           path: tourism_project/data/tourism.csv
 
@@ -78,7 +78,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull origin main --rebase
+          
+          # Stage the generated model file
           git add tourism_project/deployment/model.pkl
           git commit -m "Add trained model [skip ci]" || echo "No changes to commit"
+          
+          # Pull latest changes with rebase to incorporate remote updates cleanly
+          git pull origin main --rebase
+          
+          # Push with a safety net
           git push origin main
