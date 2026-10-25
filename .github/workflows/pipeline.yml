@@ -70,14 +70,15 @@ jobs:
           path: tourism_project/model_building
       - name: Start MLflow Server
         run: |
-          nohup mlflow ui --host 0.0.0.0 --port 5000 & 
+          nohup mlflow ui --host 0.0.0.0 --port 5000 &
           sleep 5
       - name: Model Building
         run: python tourism_project/model_building/train.py
       - name: Commit Trained Model
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase
           git add tourism_project/deployment/model.pkl
           git commit -m "Add trained model [skip ci]" || echo "No changes to commit"
-          git push
+          git push origin main
